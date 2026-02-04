@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyncJam - Musique Synchronisee</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1 class="logo"> SyncJam</h1>
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-dot"></span>
+                <span class="status-text">Deconnecte</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="search-section">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Rechercher une musique..." class="search-input">
+                <button id="searchBtn" class="search-btn"></button>
+            </div>
+            <div class="search-results" id="searchResults">
+            </div>
+        </section>
+
+        <section class="player-section">
+            <div class="now-playing" id="nowPlaying">
+                <div class="track-info">
+                    <div class="track-title">Aucune musique</div>
+                    <div class="track-artist">Selectionnez une piste</div>
+                </div>
+                <div class="track-cover">
+                    <div class="placeholder-cover"></div>
+                </div>
+            </div>
+            
+            <div class="player-controls">
+                <button id="prevBtn" class="control-btn"></button>
+                <button id="playPauseBtn" class="control-btn play-pause"></button>
+                <button id="nextBtn" class="control-btn"></button>
+            </div>
+            
+            <div class="progress-container">
+                <span class="time-display" id="currentTime">0:00</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <input type="range" id="progressSlider" min="0" max="100" value="0" class="progress-slider">
+                </div>
+                <span class="time-display" id="totalTime">0:00</span>
+                <div class="volume-control">
+                    <span class="volume-icon"></span>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
+                </div>
+            </div>
+        </section>
+
+        <section class="queue-section">
+            <div class="queue-header">
+                <h2>File d'attente</h2>
+                <span class="queue-count" id="queueCount">0 pistes</span>
+            </div>
+            <div class="queue-container" id="queueContainer">
+                <div class="queue-empty">
+                    Aucune piste dans la file d'attente
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="sync-status">
+            <span id="syncStatus">Synchronisation: OK</span>
+        </div>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/audioPlayer.js?v=1"></script>
+    <script src="js/app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+services:
+  ubuntu-reverse:
+    build: .
+    container_name: ubuntu-reverse
+    networks:
+      - syncjam
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - PYTHON_AUDIO_SERVICE_URL=http://python-audio:5000
+      - REDIS_ENABLED=true
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+      - python-audio
+      - redis
+
+  python-audio:
+    build: ./python-audio-service
+    container_name: python-audio-service
+    networks:
+      - syncjam
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: syncjam-redis
+    networks:
+      - syncjam
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tunnel
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      - syncjam
+    restart: unless-stopped
+
+networks:
+  syncjam:
+    driver: bridge
+
+volumes:
+  redis-data:
